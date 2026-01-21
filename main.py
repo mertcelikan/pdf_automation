@@ -14,7 +14,7 @@ CUSTOMER_FILE = r"C:\Program Files\Common Files\customers.json"
 #CUSTOMER_FILE = "customers.json"
 
 #default_folder_path = "/Users/mertcelikan/Desktop/pdf_otomasyon/yeni_evraklar"
-default_folder_path = r"C:\Users\Pc\Desktop\pdf_evraklar"
+default_folder_path = r"C:\Users\User\Desktop\pdf_evraklar"
 
 CUSTOMER_FIELDS = [
     "Tüzel Kişi Vergi No",
