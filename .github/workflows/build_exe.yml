@@ -1,17 +1,19 @@
-name: Build Windows EXE
+name: Build Windows EXE and Release
 
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:   # manuel çalıştırma için
+  workflow_dispatch:
+
+permissions:
+  contents: write   # RELEASE için gerekli
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Repo'yu checkout et
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Python kur
         uses: actions/setup-python@v5
@@ -23,12 +25,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: EXE oluştur (PyInstaller)
+      - name: Konsolsuz EXE oluştur
         run: |
-          pyinstaller --onefile main.py
+          pyinstaller --onefile --noconsole main.py
 
-      - name: EXE'yi artifact olarak yükle
-        uses: actions/upload-artifact@v4
+      - name: Release oluştur ve EXE ekle
+        uses: softprops/action-gh-release@v2
         with:
-          name: windows-exe
-          path: dist/*.exe
+          tag_name: v1.0.${{ github.run_number }}
+          name: Windows EXE v1.0.${{ github.run_number }}
+          files: dist/*.exe
