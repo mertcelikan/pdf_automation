@@ -10,11 +10,12 @@ import json
 from datetime import datetime 
 
 # Müşteri bilgileri dosyası
-CUSTOMER_FILE = r"C:\Program Files\Common Files\customers.json"
+CUSTOMER_FILE = r"C:\Users\User\Desktop\pdf_evraklar\debug.json"
 #CUSTOMER_FILE = "customers.json"
 
 #default_folder_path = "/Users/mertcelikan/Desktop/pdf_otomasyon/yeni_evraklar"
 default_folder_path = r"C:\Users\User\Desktop\pdf_evraklar"
+#C:/Users/User/Desktop/pdf_evraklar
 
 CUSTOMER_FIELDS = [
     "Tüzel Kişi Vergi No",
@@ -63,16 +64,21 @@ def open_edit_customer_window(index):
     tk.Entry(edit_window, textvariable=listing_name_var, width=40).pack(pady=5)
 
     def save_changes():
-        for field, var in vars_and_entries:
-            customer[field] = var.get()
+        try:
+            for field, var in vars_and_entries:
+                customer[field] = var.get()
 
-        customer["Listeleme İsmi"] = listing_name_var.get()
+            customer["Listeleme İsmi"] = listing_name_var.get()
 
-        save_customers(customers)
-        refresh_customer_list()
-        edit_window.destroy()
+            save_customers(customers)
+            refresh_customer_list()
+            edit_window.destroy()
 
-        messagebox.showinfo("Başarılı", "Müşteri bilgileri güncellendi.")
+            messagebox.showinfo("Başarılı", "Müşteri bilgileri güncellendi.")
+
+        except Exception as e:
+            messagebox.showerror("Hata", f"Güncelleme başarısız:\n\n{e}")
+
 
     tk.Button(
         edit_window,
@@ -459,21 +465,34 @@ def load_customers():
 
 
 def save_customers(customers):
-    with open(CUSTOMER_FILE, "w") as file:
-        json.dump(customers, file, indent=4)
+    try:
+        with open(CUSTOMER_FILE, "w", encoding="utf-8") as file:
+            json.dump(customers, file, indent=4, ensure_ascii=False)
+    except Exception as e:
+        messagebox.showerror("Kayıt Hatası", f"customers.json kaydedilemedi:\n\n{e}")
+        raise
+
 
 
 def add_customer(new_customer_window, vars_and_entries, listing_name_var):
-    new_customer = {}
-    for label, var in vars_and_entries:
-        new_customer[label] = var.get()
-    new_customer["Listeleme İsmi"] = listing_name_var.get()
+    try:
+        new_customer = {}
+        for label, var in vars_and_entries:
+            new_customer[label] = var.get()
 
-    customers.append(new_customer)
-    save_customers(customers)
-    refresh_customer_list()
-    new_customer_window.destroy()
-    messagebox.showinfo("Başarılı", "Müşteri başarıyla eklendi.")
+        new_customer["Listeleme İsmi"] = listing_name_var.get()
+
+        customers.append(new_customer)
+        save_customers(customers)
+
+        refresh_customer_list()
+        new_customer_window.destroy()
+
+        messagebox.showinfo("Başarılı", "Müşteri başarıyla eklendi.")
+
+    except Exception as e:
+        messagebox.showerror("Hata", f"Müşteri eklenemedi:\n\n{e}")
+
 
 
 def delete_customer(index):
