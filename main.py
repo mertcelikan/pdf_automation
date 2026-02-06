@@ -459,9 +459,10 @@ def start_process():
 
 def load_customers():
     if os.path.exists(CUSTOMER_FILE):
-        with open(CUSTOMER_FILE, "r") as file:
+        with open(CUSTOMER_FILE, "r", encoding="utf-8") as file:
             return json.load(file)
     return []
+
 
 
 def save_customers(customers):
